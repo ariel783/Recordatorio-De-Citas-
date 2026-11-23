@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Recordatorio de Citas 🩺</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #eef5fa;
+    color: #29445a;
+}
+
+header {
+    background: linear-gradient(135deg,#397da9,#62b6c9);
+    color: white;
+    padding: 30px 15px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 30px;
+}
+
+header p {
+    margin-top: 8px;
+}
+
+.container {
+    max-width: 950px;
+    margin: auto;
+    padding: 22px;
+}
+
+.resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.tarjeta-resumen {
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 3px 12px #d6e5ed;
+}
+
+.tarjeta-resumen h2 {
+    color: #3987ac;
+    font-size: 28px;
+}
+
+.tarjeta-resumen p {
+    font-size: 13px;
+}
+
+.panel {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 22px;
+    box-shadow: 0 3px 15px #d9e7ed;
+}
+
+h2 {
+    margin-bottom: 18px;
+    color: #367da4;
+}
+
+label {
+    display: block;
+    margin: 12px 0 6px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbdde8;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #4d9fc0;
+}
+
+button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: .2s;
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+
+.agregar {
+    width: 100%;
+    background: #398eae;
+    color: white;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.cita {
+    border-left: 5px solid #58a9c4;
+    background: #f5fafc;
+    border-radius: 13px;
+    padding: 17px;
+    margin-bottom: 15px;
+}
+
+.cita h3 {
+    color: #367da4;
+    margin-bottom: 10px;
+}
+
+.cita p {
+    margin: 7px 0;
+    font-size: 14px;
+}
+
+.acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 13px;
+}
+
+.completar {
+    background: #d9f3e3;
+    color: #287b4d;
+}
+
+.eliminar {
+    background: #ffe1e1;
+    color: #bd4141;
+}
+
+.estado {
+    background: #e2f2fa;
+    color: #317b9e;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+}
+
+.vacia {
+    text-align: center;
+    padding: 25px;
+    color: #8ba1b1;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #7793a4;
+}
+
+@media(max-width:500px) {
+    header h1 {
+        font-size: 24px;
+    }
+
+    .container {
+        padding: 13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🩺 Recordatorio de Citas</h1>
+    <p>¡Tu salud es importante, no olvides tus citas!</p>
+</header>
+
+<div class="container">
+
+    <div class="resumen">
+
+        <div class="tarjeta-resumen">
+            <h2 id="total">0</h2>
+            <p>Total de citas</p>
+        </div>
+
+        <div class="tarjeta-resumen">
+            <h2 id="proximas">0</h2>
+            <p>Próximas citas</p>
+        </div>
+
+        <div class="tarjeta-resumen">
+            <h2 id="completadas">0</h2>
+            <p>Completadas</p>
+        </div>
+
+    </div>
+
+    <section class="panel">
+
+        <h2>➕ Agregar una cita</h2>
+
+        <form id="formulario">
+
+            <label>Nombre del paciente</label>
+            <input type="text" id="paciente" required placeholder="Nombre del paciente">
+
+            <label>Nombre del médico</label>
+            <input type="text" id="medico" required placeholder="Dr. / Dra.">
+
+            <label>Especialidad</label>
+            <select id="especialidad" required>
+                <option value="">Selecciona una especialidad</option>
+                <option>Medicina general</option>
+                <option>Pediatría</option>
+                <option>Odontología</option>
+                <option>Oftalmología</option>
+                <option>Cardiología</option>
+                <option>Dermatología</option>
+                <option>Ginecología</option>
+                <option>Neurología</option>
+                <option>Psicología</option>
+                <option>Nutrición</option>
+                <option>Otra</option>
+            </select>
+
+            <label>Hospital o clínica</label>
+            <input type="text" id="hospital" placeholder="Nombre del hospital">
+
+            <label>Fecha de la cita</label>
+            <input type="date" id="fecha" required>
+
+            <label>Hora de la cita</label>
+            <input type="time" id="hora" required>
+
+            <label>¿Cuándo quieres el recordatorio?</label>
+            <select id="anticipacion">
+                <option value="0">A la hora de la cita</option>
+                <option value="10">10 minutos antes</option>
+                <option value="30" selected>30 minutos antes</option>
+                <option value="60">1 hora antes</option>
+                <option value="1440">1 día antes</option>
+            </select>
+
+            <label>Notas adicionales</label>
+            <textarea id="notas" rows="3" placeholder="Ej. Llevar estudios o documentos..."></textarea>
+
+            <button class="agregar" type="submit">
+                💙 Guardar cita
+            </button>
+
+        </form>
+
+    </section>
+
+    <section class="panel">
+
+        <h2>📅 Mis próximas citas</h2>
+        <div id="lista"></div>
+
+    </section>
+
+    <section class="panel">
+
+        <h2>✅ Historial de citas</h2>
+        <div id="historial"></div>
+
+    </section>
+
+</div>
+
+<footer>
+    <p>🩺 Recordatorio de Citas © 2026</p>
+    <p>Organiza tu tiempo, cuida tu salud 💙</p>
+</footer>
+
+<script>
+
+let citas = JSON.parse(localStorage.getItem("misCitas")) || [];
+
+const formulario = document.getElementById("formulario");
+
+function guardar() {
+    localStorage.setItem("misCitas", JSON.stringify(citas));
+}
+
+function fechaLocal(fecha, hora) {
+    const [año, mes, dia] = fecha.split("-").map(Number);
+    const [h, m] = hora.split(":").map(Number);
+    return new Date(año, mes - 1, dia, h, m);
+}
+
+function mostrarCitas() {
+
+    const lista = document.getElementById("lista");
+    const historial = document.getElementById("historial");
+
+    lista.innerHTML = "";
+    historial.innerHTML = "";
+
+    const ahora = new Date();
+
+    let futuras = citas.filter(c =>
+        !c.completada && fechaLocal(c.fecha,c.hora) >= ahora
+    );
+
+    let anteriores = citas.filter(c =>
+        c.completada || fechaLocal(c.fecha,c.hora) < ahora
+    );
+
+    futuras.sort((a,b) =>
+        fechaLocal(a.fecha,a.hora) - fechaLocal(b.fecha,b.hora)
+    );
+
+    anteriores.sort((a,b) =>
+        fechaLocal(b.fecha,b.hora) - fechaLocal(a.fecha,a.hora)
+    );
+
+    futuras.forEach(c => {
+        lista.appendChild(crearTarjeta(c));
+    });
+
+    anteriores.forEach(c => {
+        historial.appendChild(crearTarjeta(c));
+    });
+
+    if(futuras.length === 0) {
+        lista.innerHTML =
+        '<div class="vacia">🌸 No tienes citas próximas.</div>';
+    }
+
+    if(anteriores.length === 0) {
+        historial.innerHTML =
+        '<div class="vacia">Todavía no hay historial.</div>';
+    }
+
+    document.getElementById("total").textContent = citas.length;
+
+    document.getElementById("proximas").textContent = futuras.length;
+
+    document.getElementById("completadas").textContent =
+    citas.filter(c => c.completada).length;
+}
+
+function crearTarjeta(c) {
+
+    const div = document.createElement("div");
+    div.className = "cita";
+
+    const titulo = document.createElement("h3");
+    titulo.textContent = "👨‍⚕️ " + c.medico;
+
+    const datos = [
+        "👤 Paciente: " + c.paciente,
+        "🩺 Especialidad: " + c.especialidad,
+        "🏥 Lugar: " + (c.hospital || "No especificado"),
+        "📅 Fecha: " + c.fecha,
+        "⏰ Hora: " + c.hora,
+        "📝 Notas: " + (c.notas || "Ninguna")
+    ];
+
+    div.appendChild(titulo);
+
+    datos.forEach(texto => {
+        const p = document.createElement("p");
+        p.textContent = texto;
+        div.appendChild(p);
+    });
+
+    const estado = document.createElement("span");
+    estado.className = "estado";
+    estado.textContent = c.completada
+        ? "Completada"
+        : fechaLocal(c.fecha,c.hora) < new Date()
+            ? "Fecha pasada"
+            : "Pendiente";
+
+    div.appendChild(estado);
+
+    const acciones = document.createElement("div");
+    acciones.className = "acciones";
+
+    if(!c.completada) {
+        const boton = document.createElement("button");
+        boton.className = "completar";
+        boton.textContent = "✅ Completar";
+
+        boton.onclick = () => {
+            c.completada = true;
+            guardar();
+            mostrarCitas();
+        };
+
+        acciones.appendChild(boton);
+    }
+
+    const borrar = document.createElement("button");
+    borrar.className = "eliminar";
+    borrar.textContent = "🗑️ Eliminar";
+
+    borrar.onclick = () => {
+        if(confirm("¿Eliminar esta cita?")) {
+            citas = citas.filter(x => x.id !== c.id);
+            guardar();
+            mostrarCitas();
+        }
+    };
+
+    acciones.appendChild(borrar);
+    div.appendChild(acciones);
+
+    return div;
+}
+
+// Agregar cita
+formulario.addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const nueva = {
+        id: Date.now().toString(),
+        paciente: document.getElementById("paciente").value,
+        medico: document.getElementById("medico").value,
+        especialidad: document.getElementById("especialidad").value,
+        hospital: document.getElementById("hospital").value,
+        fecha: document.getElementById("fecha").value,
+        hora: document.getElementById("hora").value,
+        anticipacion: Number(document.getElementById("anticipacion").value),
+        notas: document.getElementById("notas").value,
+        completada: false,
+        avisada: false
+    };
+
+    const fechaCita = fechaLocal(nueva.fecha,nueva.hora);
+
+    if(fechaCita <= new Date()) {
+        alert("Selecciona una fecha y hora futuras.");
+        return;
+    }
+
+    citas.push(nueva);
+
+    guardar();
+    mostrarCitas();
+
+    formulario.reset();
+
+    alert("¡Cita guardada correctamente! 💙");
+
+});
+
+// Recordatorios mientras la página está abierta
+async function activarNotificaciones() {
+
+    if(!("Notification" in window)) {
+        alert("Este navegador no admite notificaciones.");
+        return;
+    }
+
+    const permiso = await Notification.requestPermission();
+
+    if(permiso === "granted") {
+        alert("¡Notificaciones activadas! 💙");
+    } else {
+        alert("No se concedió permiso para notificaciones.");
+    }
+}
+
+function revisarRecordatorios() {
+
+    if(!("Notification" in window) ||
+       Notification.permission !== "granted") return;
+
+    const ahora = new Date();
+
+    citas.forEach(c => {
+
+        if(c.completada || c.avisada) return;
+
+        const momento = fechaLocal(c.fecha,c.hora);
+        const aviso = new Date(
+            momento.getTime() - c.anticipacion * 60000
+        );
+
+        if(ahora >= aviso && ahora <= momento) {
+
+            new Notification("🩺 ¡Tienes una cita médica!", {
+                body: "Con " + c.medico +
+                " a las " + c.hora
+            });
+
+            c.avisada = true;
+            guardar();
+        }
+
+    });
+}
+
+// Iniciar
+mostrarCitas();
+
+setInterval(revisarRecordatorios, 15000);
+
+</script>
+
+</body>
+</html>
